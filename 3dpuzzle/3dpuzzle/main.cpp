@@ -8,16 +8,29 @@ using namespace std;
 int dimension = 0; //3,4,5 etc
 int cpt=0;
 
+struct color
+{
+	char couleur;
+	int count;
+	int states[2];
+};
+
+color colors[255]; //This puts the max of colors at an arbitrary 10.
+
+vector<color*> listeCouleurs;
+
 struct cell
 {
 	int id; //pour debug
 	vector<cell*> voisins;
 	char color;
 
+	//char originalState
+
 };
 
 
-vector<cell> all_cells;
+vector<cell> cells;
 
 
 string itos(int integer)
@@ -45,8 +58,19 @@ void readMatrixLine(char* line)
 		cell t;
 		t.color = *pc;
 		t.id = cpt++;
-		all_cells.push_back(t);
+		cells.push_back(t);
 		pc++;
+
+		//Structure globale des couleurs
+		if (t.color != 0 && t.color != 'X') {
+			int count = colors[t.color].count; //on va chercher le count
+			colors[t.color].couleur = t.color; //on set la couleur (debug surtout)
+			colors[t.color].states[ count ] =  t.id; //on set le state
+			colors[t.color].count++;
+
+			//add dans le vecteur
+			listeCouleurs.push_back( &colors[t.color] );
+		}
 
 	}
 
@@ -150,13 +174,24 @@ void readGraph(char* filename)
 			int s = readIntegerBeforeX(',', pc);
 			if (s == -1 ) break; //fin des connexions
 			//ajouter la connexion
-			all_cells[sommet].voisins.push_back( &all_cells[s] );
+			cells[sommet].voisins.push_back( &cells[s] );
 		}
 
 
 
 
 	} //fin de la boucle de lecture du fichier
+
+
+}
+
+//Fonction Recursive qui verifie si une couleur est valide
+int checkSolutionColor(int startCell, int endCell)
+{
+	//Parcourir recursivement en profondeur
+
+
+	return 1;
 
 
 }
@@ -168,8 +203,10 @@ int main(void)
 	//Read the puzzle
 	readMatrix("puzzle.txt");
 
+	//Read the graph
 	readGraph("graph.txt");
 
+	//Check a solution
 
 
 	return 0;
