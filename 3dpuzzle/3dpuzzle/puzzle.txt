@@ -2,21 +2,20 @@
 ; Values chart : X means dead cell, 0 means normal cell, means normal cell, 1 means red color, 2 means blue, 3 means green, 4 means yellow. 
 ; But in the end it doesnt matter, just make sure it matches (comments help)
 ; First line is always the dimension of the matrix
-3
 ; First matrix (bottom left side) Blue = 1, red = 2, green =3, orange = 4
-1,0,2
-X,0,X
-X,1,X
+1 0 2
+X 0 X
+X 1 X
 
 ; Second matrix (bottom, right side)
-0,3,0
-0,X,0
-2,X,3
+0 3 0
+0 X 0
+2 X 3
 
 ; Third matrix (top)
-X,0,4
-X,0,X
-X,4,X
+X 0 4
+X 0 X
+X 4 X
 
 
 
