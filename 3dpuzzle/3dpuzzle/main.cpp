@@ -50,7 +50,7 @@ void readMatrixLine(char* line)
 
 }
 
-void readGraphFile(char * filename)
+void readMatrix(char * filename)
 {
 
 	FILE * fichier = fopen(filename, "r");
@@ -85,36 +85,40 @@ void readGraphFile(char * filename)
 	}
 }
 
-void convertMatrixToGraph(void)
+//This will crash if the matrix hasnt been read before (ofc)
+void readGraph(char* filename)
 {
-	
-	//La matrice est remplie de gauche a droite
-	//18 19 20
-	//21 22 23
-	//24 25 26
 
-	//(les indices, les connexions) 
+	FILE * fichier = fopen(filename, "r");
+	static char line[200];
 
- //24 25 26      20 23 26
-	//0 1 2      9 10 11
-	//3 4 5      12 13 14
-	//6 7 8      15 16 17
+	char * pc; //iterator
 
-	
-	//Etape #1, faire les connexions de base
-	//Exception : quand la matrice contient un X
+	//Read the dimension
 
-	//Faire les connexions horizontales
-	//for (int i = 0; i < all_cells.size(); i++)
-	//{
-	//	all_cells[i].voisins.push_back( &all_cells[i+1]);
+	while (fgets(line, 200, fichier) != NULL) 
+	{
 
-	//}
+		//Commentary, skip
+		if (line[0] == ';') continue;
 
+		//Empty line, skip
+		if (line[0] == 10) continue;
 
-	if (all_cells[0].color != 'X') {
-		all_cells[0].voisins.push_back(all_cells[0+1]; //gauche
+		//Special case for the dimension
+		if (line[0] == 'd') {
+			dimension = line[1] + '0';
+			continue;
+		}
 
+		pc = line;
+
+		//Read a line of the matrix
+		//readMatrixLine(pc);
+
+		readMatrixLine(pc);
+
+	}
 
 
 
@@ -122,14 +126,14 @@ void convertMatrixToGraph(void)
 
 }
 
+
 int main(void)
 {
 	
 	//Read the puzzle
-	readGraphFile("puzzle.txt");
+	readMatrix("puzzle.txt");
 
-	convertMatrixToGraph();
-
+	readGraph("graph.txt");
 
 
 
