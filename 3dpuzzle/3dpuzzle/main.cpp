@@ -85,12 +85,50 @@ void readGraphFile(char * filename)
 	}
 }
 
+void convertMatrixToGraph(void)
+{
+	
+	//La matrice est remplie de gauche a droite
+	//18 19 20
+	//21 22 23
+	//24 25 26
+
+	//(les indices, les connexions) 
+
+ //24 25 26      20 23 26
+	//0 1 2      9 10 11
+	//3 4 5      12 13 14
+	//6 7 8      15 16 17
+
+	
+	//Etape #1, faire les connexions de base
+	//Exception : quand la matrice contient un X
+
+	//Faire les connexions horizontales
+	//for (int i = 0; i < all_cells.size(); i++)
+	//{
+	//	all_cells[i].voisins.push_back( &all_cells[i+1]);
+
+	//}
+
+
+	if (all_cells[0].color != 'X') {
+		all_cells[0].voisins.push_back(all_cells[0+1]; //gauche
+
+
+
+
+
+
+}
 
 int main(void)
 {
 	
 	//Read the puzzle
 	readGraphFile("puzzle.txt");
+
+	convertMatrixToGraph();
 
 
 
