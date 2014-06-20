@@ -62,7 +62,7 @@ void readMatrixLine(char* line)
 		pc++;
 
 		//Structure globale des couleurs
-		if (t.color != 0 && t.color != 'X') {
+		if (t.color != '0' && t.color != 'X') {
 			int count = colors[t.color].count; //on va chercher le count
 			colors[t.color].couleur = t.color; //on set la couleur (debug surtout)
 			colors[t.color].states[ count ] =  t.id; //on set le state
@@ -191,10 +191,14 @@ struct colorExplorer
 	int startState;
 	int endState;
 
+	int visited[27]; //VLA array pls
+
 	//Fuck you C si j'ai pas mes higher order functions je vais faire ça comme ça
 	//cette fonction part du currentState et cherche endState recursivement
 	int check(int state)
 	{
+
+		visited[state] = 1;
 
 		if (state == endState) return 1; //succes
 
@@ -203,6 +207,7 @@ struct colorExplorer
 		{
 			cell* voisin = cells[state].voisins[i];
 			if (voisin->color != currentColor) continue;
+			if (visited[voisin->id] == 1) continue;
 
 			int res = check(voisin->id);
 			if (res == 1) return 1;
@@ -247,9 +252,16 @@ int main(void)
 	//Read the graph
 	readGraph("graph.txt");
 
+	int res;
 	//Check a solution for the first color
 	color * first = listeCouleurs[0];
-	int res = checkSolutionColor(first);
+	//int res = checkSolutionColor(first);
+
+	//should work
+	cells[1].color = '1';
+	cells[4].color = '1';
+
+	res = checkSolutionColor(first);
 
 
 	return 0;
