@@ -185,10 +185,51 @@ void readGraph(char* filename)
 
 }
 
+struct colorExplorer
+{
+	char currentColor;
+	int startState;
+	int endState;
+
+	//Fuck you C si j'ai pas mes higher order functions je vais faire ça comme ça
+	//cette fonction part du currentState et cherche endState recursivement
+	int check(int state)
+	{
+
+		if (state == endState) return 1; //succes
+
+		//Pour toutes les connexions de cette cell
+		for (int i=0; i< cells[state].voisins.size(); i++) 
+		{
+			cell* voisin = cells[state].voisins[i];
+			if (voisin->color != currentColor) continue;
+
+			int res = check(voisin->id);
+			if (res == 1) return 1;
+			else return 0;
+
+		}
+
+		return 0; //failure
+
+	}
+
+
+};
+
 //Fonction Recursive qui verifie si une couleur est valide
-int checkSolutionColor(int startCell, int endCell)
+int checkSolutionColor(color * c)
 {
 	//Parcourir recursivement en profondeur
+	colorExplorer e;
+
+	e.currentColor = c->couleur;
+	e.startState = c->states[0];
+	e.endState = c->states[1];
+
+	int res = e.check( e.startState);
+	if (res == 1) printf("succes");
+	else printf("fail");
 
 
 	return 1;
@@ -206,7 +247,9 @@ int main(void)
 	//Read the graph
 	readGraph("graph.txt");
 
-	//Check a solution
+	//Check a solution for the first color
+	color * first = &colors[0];
+	int res = checkSolutionColor(first);
 
 
 	return 0;
