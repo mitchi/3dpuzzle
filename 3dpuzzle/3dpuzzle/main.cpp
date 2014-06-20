@@ -248,7 +248,7 @@ int main(void)
 	readGraph("graph.txt");
 
 	//Check a solution for the first color
-	color * first = &colors[0];
+	color * first = listeCouleurs[0];
 	int res = checkSolutionColor(first);
 
 
