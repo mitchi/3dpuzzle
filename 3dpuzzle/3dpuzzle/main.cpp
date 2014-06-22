@@ -22,11 +22,10 @@ vector<color*> listeCouleurs;
 struct cell
 {
 	int id; //pour debug
+	bool original; //cant change this value
 	vector<cell*> voisins;
 	char color;
-
 	//char originalState
-
 };
 
 
@@ -58,19 +57,24 @@ void readMatrixLine(char* line)
 		cell t;
 		t.color = *pc;
 		t.id = cpt++;
-		cells.push_back(t);
-		pc++;
+
 
 		//Structure globale des couleurs
 		if (t.color != '0' && t.color != 'X') {
 			int count = colors[t.color].count; //on va chercher le count
 			colors[t.color].couleur = t.color; //on set la couleur (debug surtout)
 			colors[t.color].states[ count ] =  t.id; //on set le state
+			//set the cell as an original
+			t.original = true;
+
 			colors[t.color].count++;
 
 			//add dans le vecteur
 			listeCouleurs.push_back( &colors[t.color] );
 		}
+
+		cells.push_back(t);
+		pc++;
 
 	}
 
@@ -233,13 +237,24 @@ int checkSolutionColor(color * c)
 	e.endState = c->states[1];
 
 	int res = e.check( e.startState);
-	if (res == 1) printf("succes");
-	else printf("fail");
+	if (res == 1) return 1;
+	
+	
+	return 0;
 
 
+}
+
+int checkAll(void)
+{
+
+	for (int i =0; i< listeCouleurs.size(); i++)
+	{
+		color * c = listeCouleurs[i];
+		int res = checkSolutionColor(c);
+		if (res == 0) return 0;
+	}
 	return 1;
-
-
 }
 
 
@@ -255,16 +270,51 @@ int main(void)
 	int res;
 	//Check a solution for the first color
 	color * first = listeCouleurs[0];
-	//int res = checkSolutionColor(first);
+	// res = checkSolutionColor(first);
 
 	//should work
-	cells[1].color = '1';
-	cells[4].color = '1';
+	//cells[1].color = '1';
+	//cells[4].color = '1';
 
-	res = checkSolutionColor(first);
+	//res = checkSolutionColor(first);
+
 
 
 	return 0;
 
 
 }
+
+//Try everything. Stops when the  solution is found
+//void tryAll()
+//{
+//	
+//	for (int i = 0; i < cells.size() ; i++) 
+//	{
+//		cell * current = &cells[i];
+//		if (current->color == 'X')
+//			continue;  //idee : les cells "X" peuvent être enlevees, elles ne servent a rien quand on a notre graphe?
+//
+//		//skip quand cest une originale
+//		if (current->original == true)
+//			continue;
+//
+//		//Sinon essayer toutes les couleurs
+//		for (int j =0; j< listeCouleurs.size(); j++)
+//		{
+//			current->color = listeCouleurs[j]->couleur;
+//
+//			int res = checkAll();
+//			if (res == 1) {
+//				printf("succes");
+//				return;
+//			}
+//
+//		}
+//
+//	}
+//
+//	printf("fail");
+//
+//
+//}
