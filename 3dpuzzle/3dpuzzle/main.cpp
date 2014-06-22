@@ -292,80 +292,6 @@ int checkAll(void)
 	return -1;
 }
 
-int stop = 0;
-char dummy[10];
-
-
-//TODO faire une algorithme de parcours qui peut 
-struct generator
-{
-
-	//We need this data structureto explore a graph like a tree
-	int visited[27]; //VLA array pls
-	
-
-	//Find the solution with DFS search
-	//provide any starting node which is not a X node
-	//Returns when the solution is found. The solution will be in the global state
-
-	//doit on visiter les sommets originaux pour une grosse periode de temps ou pas?
-	//on pourrait skip tout de suite, sans faire de boucle, au prochain voisin??
-
-	int find(int state)
-	{
-
-	//	printf("%d ", state); stop++; if (stop % 15 == 0) gets(dummy), printf("\n");
-
-		//get the cell at this state
-		cell * c = &cells[state];
-		visited[state] = 1;
-
-		//Check if the solution is valid
-		//int res = checkAll();
-		//if (res == 1) return 1;
-
-		//if its not an original cell, it means we can change the color
-		if (c->original == false) 
-		{
-
-			//Change the color of this cell and check if it works
-			for (int i =0; i< listeCouleurs.size(); i++)
-			{
-				c->color = listeCouleurs[i]->couleur;
-
-				for (int j = 0; j< c->voisins.size(); j++)
-				{
-					int next = c->voisins[j]->id;
-					if (visited[next] == 1) continue; //eliminate the cycles
-					int res = find(next);
-					if (res == -1) return -1;
-					visited[res] = 0; //reset the visited tag
-				}
-
-				//Check if the solution is valid
-				int res = checkAll();
-				if (res == -1) return -1; //-1 means valid, need enum for this
-
-			}
-		}
-		//original cell, just continue the search
-		else 
-		{
-				for (int j = 0; j< c->voisins.size(); j++)
-				{
-					int next = c->voisins[j]->id;
-					if (visited[next] == 1) continue; //eliminate the cycles
-					int res = find(next);
-					if (res == -1) return -1;
-					visited[res] = 0; //reset the visited tag
-				}
-		}
-
-		return state;
-	}
-
-};
-
 struct bruteforce
 {
 
@@ -417,34 +343,6 @@ int main(void)
 	//Read the graph
 	readGraph("graph.txt");
 
-	//Check a solution for the first color
-	//color * first = listeCouleurs[0];
-	// res = checkSolutionColor(first);
-
-	//should work
-	//cells[1].color = '1';
-	//cells[4].color = '1';
-
-	//cells[9].color = '2';
-	//cells[11].color = '3';
-	//cells[12].color = '2';
-	//cells[14].color = '3';
-
-	//cells[19].color = '4';
-	//cells[22].color = '4';
-
-	//res = checkAll();
-	//if (res == -1) printf("Succes");
-	//else printf("badd");
-	//exit(1);
-
-	//res = checkSolutionColor(first);
-
-	//generator g;
-	//res = g.find(0);
-	//if (res == -1) printf("Succes\n");
-	//else printf("bouuu\n");
-
 	bruteforce b;
 	b.init();
 	int res = b.gen(0);
@@ -458,37 +356,3 @@ int main(void)
 
 
 }
-
-//Try everything. Stops when the  solution is found
-//void tryAll()
-//{
-//	
-//	for (int i = 0; i < cells.size() ; i++) 
-//	{
-//		cell * current = &cells[i];
-//		if (current->color == 'X')
-//			continue;  //idee : les cells "X" peuvent être enlevees, elles ne servent a rien quand on a notre graphe?
-//
-//		//skip quand cest une originale
-//		if (current->original == true)
-//			continue;
-//
-//		//Sinon essayer toutes les couleurs
-//		for (int j =0; j< listeCouleurs.size(); j++)
-//		{
-//			current->color = listeCouleurs[j]->couleur;
-//
-//			int res = checkAll();
-//			if (res == 1) {
-//				printf("succes");
-//				return;
-//			}
-//
-//		}
-//
-//	}
-//
-//	printf("fail");
-//
-//
-//}
