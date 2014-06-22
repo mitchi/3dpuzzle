@@ -207,7 +207,7 @@ struct colorExplorer
 	int startState;
 	int endState;
 
-	int visited[27]; //VLA array pls
+	int visited[27]; //VLA array pls.In debug mode this is initialized, in Release it is not. 
 
 	//Fuck you C si j'ai pas mes higher order functions je vais faire ça comme ça
 	//cette fonction part du currentState et cherche endState recursivement
@@ -243,6 +243,8 @@ int checkSolutionColor(color * c)
 {
 	//Parcourir recursivement en profondeur
 	colorExplorer e;
+
+	memset(e.visited, 0, sizeof(e.visited) );
 
 	e.currentColor = c->couleur;
 	e.startState = c->states[0];
@@ -350,7 +352,7 @@ int main(void)
 	else printf("fail");
 
 
-	 fclose (stdout);
+	// fclose (stdout);
 
 	return 0;
 
