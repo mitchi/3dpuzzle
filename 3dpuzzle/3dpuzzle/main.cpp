@@ -147,6 +147,8 @@ int readIntegerBeforeX(char X, char  * &  pc)
 
 
 //This will crash if the matrix hasnt been read before (ofc)
+//One early optimisation we do here is that we remove the X cells
+//Since they are not needed in the graph
 void readGraph(char* filename)
 {
 
@@ -172,12 +174,20 @@ void readGraph(char* filename)
 
 		//10 9,11,13,23
 		int sommet = readIntegerBeforeX(' ', pc);
+		//skip these nodes
+		if (cells[sommet].color == 'X')
+			continue;
+
 
 		while (1)
 		{
 			int s = readIntegerBeforeX(',', pc);
 			if (s == -1 ) break; //fin des connexions
 			//ajouter la connexion
+			//skip these nodes
+			if (cells[sommet].color == 'X')
+			continue;
+
 			cells[sommet].voisins.push_back( &cells[s] );
 		}
 
@@ -258,6 +268,61 @@ int checkAll(void)
 }
 
 
+struct generator
+{
+
+	//We need this data structureto explore a graph like a tree
+	int visited[27]; //VLA array pls
+	
+
+	//Find the solution with DFS search
+	//provide any starting node which is not a X node
+	//Returns when the solution is found. The solution will be in the global state
+	int find(int state)
+	{
+
+		//get the cell at this state
+		cell * c = &cells[state];
+		visited[state] = 1;
+
+		//Check if the solution is valid
+		int res = checkAll();
+		if (res == 1) return 1;
+
+		//if its not an original cell, it means we can change the color
+		if (c->original = false) 
+		{
+
+			//Change the color of this cell and check if it works
+			for (int i =0; i< listeCouleurs.size(); i++)
+			{
+				c->color = listeCouleurs[i]->couleur;
+
+				for (int j = 0; j< c->voisins.size(); j++)
+				{
+					int next = c->voisins[j]->id;
+					if (visited[next] == 1) continue; //eliminate the cycles
+					if (find(next) == 1) return 1;
+				}
+			}
+		}
+		//original cell, just continue the search
+		else 
+		{
+				for (int j = 0; j< c->voisins.size(); j++)
+				{
+					int next = c->voisins[j]->id;
+					if (visited[next] == 1) continue; //eliminate the cycles
+					if (find(next) == 1) return 1;
+				}
+		}
+
+		return 0; //not found
+	}
+
+};
+
+
 int main(void)
 {
 	
@@ -277,6 +342,11 @@ int main(void)
 	//cells[4].color = '1';
 
 	//res = checkSolutionColor(first);
+
+	generator g;
+	res = g.find(0);
+	if (res == 1) printf("Succes\n");
+	else printf("bouuu\n");
 
 
 
