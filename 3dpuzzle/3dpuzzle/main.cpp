@@ -262,6 +262,9 @@ void print_cells(void)
 
 	for (int i = 0; i < cells.size(); i++) {
 
+		//if (cells[i].original == true) printf("o%c ", cells[i].color);
+		//else printf("r%c ", cells[i].color);
+
 		printf("%c ", cells[i].color);
 
 		if ( (i+1) % 3 == 0) printf("\n");
@@ -286,7 +289,7 @@ int checkAll(void)
 		int res = checkSolutionColor(c);
 		if (res == 0) return 0;
 	}
-	return 1;
+	return -1;
 }
 
 
@@ -322,14 +325,15 @@ struct generator
 
 				//Check if the solution is valid
 				int res = checkAll();
-				if (res == 1) return 1;
-
+				if (res == -1) return -1; //-1 means valid, need enum for this
 
 				for (int j = 0; j< c->voisins.size(); j++)
 				{
 					int next = c->voisins[j]->id;
 					if (visited[next] == 1) continue; //eliminate the cycles
-					if (find(next) == 1) return 1;
+					int res = find(next);
+					if (res == -1) return -1;
+					visited[res] = 0; //reset the visited tag
 				}
 			}
 		}
@@ -340,11 +344,13 @@ struct generator
 				{
 					int next = c->voisins[j]->id;
 					if (visited[next] == 1) continue; //eliminate the cycles
-					if (find(next) == 1) return 1;
+					int res = find(next);
+					if (res == -1) return -1;
+					visited[res] = 0; //reset the visited tag
 				}
 		}
 
-		return 0; //not found
+		return state;
 	}
 
 };
@@ -353,6 +359,8 @@ struct generator
 int main(void)
 {
 	
+	//freopen ("myfile.txt","w",stdout);
+
 	//Read the puzzle
 	readMatrix("puzzle.txt");
 
@@ -365,17 +373,31 @@ int main(void)
 	// res = checkSolutionColor(first);
 
 	//should work
-	//cells[1].color = '1';
-	//cells[4].color = '1';
+	cells[1].color = '1';
+	cells[4].color = '1';
+
+	cells[9].color = '2';
+	//cells[11].color = '3';
+	//cells[12].color = '2';
+	//cells[14].color = '3';
+
+	cells[19].color = '4';
+	cells[22].color = '4';
+
+	//res = checkAll();
+	//if (res == -1) printf("Succes");
+	//else printf("badd");
+	//exit(1);
 
 	//res = checkSolutionColor(first);
 
 	generator g;
 	res = g.find(0);
-	if (res == 1) printf("Succes\n");
+	if (res == -1) printf("Succes\n");
 	else printf("bouuu\n");
 
 
+	 fclose (stdout);
 
 	return 0;
 

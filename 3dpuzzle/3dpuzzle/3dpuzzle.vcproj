@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\myfile.txt"
+				>
+			</File>
+			<File
 				RelativePath=".\puzzle.txt"
 				>
 			</File>
