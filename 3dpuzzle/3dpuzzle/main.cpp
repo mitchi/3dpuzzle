@@ -55,6 +55,7 @@ void readMatrixLine(char* line)
 		}
 
 		cell t;
+		t.original = false;
 		t.color = *pc;
 		t.id = cpt++;
 
@@ -70,7 +71,8 @@ void readMatrixLine(char* line)
 			colors[t.color].count++;
 
 			//add dans le vecteur
-			listeCouleurs.push_back( &colors[t.color] );
+			if (colors[t.color].count == 1)
+				listeCouleurs.push_back( &colors[t.color] );
 		}
 
 		cells.push_back(t);
@@ -185,7 +187,7 @@ void readGraph(char* filename)
 			if (s == -1 ) break; //fin des connexions
 			//ajouter la connexion
 			//skip these nodes
-			if (cells[sommet].color == 'X')
+			if (cells[s].color == 'X')
 			continue;
 
 			cells[sommet].voisins.push_back( &cells[s] );
@@ -255,8 +257,28 @@ int checkSolutionColor(color * c)
 
 }
 
+void print_cells(void)
+{
+
+	for (int i = 0; i < cells.size(); i++) {
+
+		printf("%c ", cells[i].color);
+
+		if ( (i+1) % 3 == 0) printf("\n");
+
+		if ( (i+1) % 9 == 0) printf("\n");
+
+	}
+
+	int u = 2+2;
+
+}
+int ddd = 0;
 int checkAll(void)
 {
+
+	printf("essai : %d\n", ++ddd);
+	print_cells(); //debug
 
 	for (int i =0; i< listeCouleurs.size(); i++)
 	{
@@ -286,17 +308,22 @@ struct generator
 		visited[state] = 1;
 
 		//Check if the solution is valid
-		int res = checkAll();
-		if (res == 1) return 1;
+		//int res = checkAll();
+		//if (res == 1) return 1;
 
 		//if its not an original cell, it means we can change the color
-		if (c->original = false) 
+		if (c->original == false) 
 		{
 
 			//Change the color of this cell and check if it works
 			for (int i =0; i< listeCouleurs.size(); i++)
 			{
 				c->color = listeCouleurs[i]->couleur;
+
+				//Check if the solution is valid
+				int res = checkAll();
+				if (res == 1) return 1;
+
 
 				for (int j = 0; j< c->voisins.size(); j++)
 				{
