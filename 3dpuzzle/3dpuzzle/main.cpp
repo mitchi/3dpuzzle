@@ -280,8 +280,8 @@ int ddd = 0;
 int checkAll(void)
 {
 
-	printf("essai : %d\n", ++ddd);
-	print_cells(); //debug
+	//printf("essai : %d\n", ++ddd);
+	//print_cells(); //debug
 
 	for (int i =0; i< listeCouleurs.size(); i++)
 	{
@@ -292,7 +292,11 @@ int checkAll(void)
 	return -1;
 }
 
+int stop = 0;
+char dummy[10];
 
+
+//TODO faire une algorithme de parcours qui peut 
 struct generator
 {
 
@@ -303,8 +307,14 @@ struct generator
 	//Find the solution with DFS search
 	//provide any starting node which is not a X node
 	//Returns when the solution is found. The solution will be in the global state
+
+	//doit on visiter les sommets originaux pour une grosse periode de temps ou pas?
+	//on pourrait skip tout de suite, sans faire de boucle, au prochain voisin??
+
 	int find(int state)
 	{
+
+	//	printf("%d ", state); stop++; if (stop % 15 == 0) gets(dummy), printf("\n");
 
 		//get the cell at this state
 		cell * c = &cells[state];
@@ -323,10 +333,6 @@ struct generator
 			{
 				c->color = listeCouleurs[i]->couleur;
 
-				//Check if the solution is valid
-				int res = checkAll();
-				if (res == -1) return -1; //-1 means valid, need enum for this
-
 				for (int j = 0; j< c->voisins.size(); j++)
 				{
 					int next = c->voisins[j]->id;
@@ -335,6 +341,11 @@ struct generator
 					if (res == -1) return -1;
 					visited[res] = 0; //reset the visited tag
 				}
+
+				//Check if the solution is valid
+				int res = checkAll();
+				if (res == -1) return -1; //-1 means valid, need enum for this
+
 			}
 		}
 		//original cell, just continue the search
@@ -355,6 +366,45 @@ struct generator
 
 };
 
+struct bruteforce
+{
+
+	vector<cell*> liste;
+
+	void init()
+	{
+
+		for (int i=0; i<cells.size(); i++)
+		{
+			cell * c = &cells[i];
+			if (c->color == 'X' || c->original == true) continue;
+			liste.push_back(c);
+			
+		}
+	}
+
+	int gen(int index)
+	{
+
+		if (index == liste.size() ) return 0;
+
+			cell* c = liste[index];
+
+			for(int i = 0; i < listeCouleurs.size(); i++)
+			{
+				c->color = listeCouleurs[i]->couleur;
+				int res = gen(index+1); if (res == -1) return -1;
+				if (checkAll() == -1)  {
+					print_cells();
+					return -1;
+				}
+			}
+
+		return 0;
+	}
+
+};
+
 
 int main(void)
 {
@@ -367,22 +417,21 @@ int main(void)
 	//Read the graph
 	readGraph("graph.txt");
 
-	int res;
 	//Check a solution for the first color
-	color * first = listeCouleurs[0];
+	//color * first = listeCouleurs[0];
 	// res = checkSolutionColor(first);
 
 	//should work
-	cells[1].color = '1';
-	cells[4].color = '1';
+	//cells[1].color = '1';
+	//cells[4].color = '1';
 
-	cells[9].color = '2';
+	//cells[9].color = '2';
 	//cells[11].color = '3';
 	//cells[12].color = '2';
 	//cells[14].color = '3';
 
-	cells[19].color = '4';
-	cells[22].color = '4';
+	//cells[19].color = '4';
+	//cells[22].color = '4';
 
 	//res = checkAll();
 	//if (res == -1) printf("Succes");
@@ -391,10 +440,16 @@ int main(void)
 
 	//res = checkSolutionColor(first);
 
-	generator g;
-	res = g.find(0);
-	if (res == -1) printf("Succes\n");
-	else printf("bouuu\n");
+	//generator g;
+	//res = g.find(0);
+	//if (res == -1) printf("Succes\n");
+	//else printf("bouuu\n");
+
+	bruteforce b;
+	b.init();
+	int res = b.gen(0);
+	if (res == -1) printf("succes");
+	else printf("fail");
 
 
 	 fclose (stdout);
