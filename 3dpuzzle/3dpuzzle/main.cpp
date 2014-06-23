@@ -313,6 +313,7 @@ struct bruteforce
 
 	int gen(int index)
 	{
+		printf("\n%d", index);
 
 		if (index == liste.size() ) return 0;
 
@@ -337,7 +338,7 @@ struct bruteforce
 int main(void)
 {
 	
-	//freopen ("myfile.txt","w",stdout);
+	freopen ("myfile.txt","w",stdout);
 
 	//Read the puzzle
 	readMatrix("puzzle.txt");
@@ -352,7 +353,7 @@ int main(void)
 	else printf("fail");
 
 
-	// fclose (stdout);
+	fclose (stdout);
 
 	return 0;
 
